@@ -1,2 +1,4 @@
 *.o
 /screen
+*.log
+.DS_Store
