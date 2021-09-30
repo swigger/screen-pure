@@ -20,6 +20,7 @@
  ****************************************************************
  */
 
+#pragma once
 struct ListData;
 
 struct ListRow

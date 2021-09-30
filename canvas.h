@@ -27,7 +27,7 @@
  * $Id$ GNU
  */
 
-#ifndef SCREEN_CANVAS_H
+#pragma once
 #define SCREEN_CANVAS_H
 
 #define SLICE_UNKN 0
@@ -97,5 +97,4 @@ extern void  PutWindowCv __P((struct canvas *));
   display = olddisplay;				\
 }
 
-#endif /* SCREEN_CANVAS_H */
 

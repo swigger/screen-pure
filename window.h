@@ -30,7 +30,7 @@
  * $Id$ GNU
  */
 
-#ifndef SCREEN_WINDOW_H
+#pragma once
 #define SCREEN_WINDOW_H
 
 /* keep this in sync with the initialisations in window.c */
@@ -61,7 +61,6 @@ struct NewWindow
   int	poll_zombie_timeout;
 };
 
-#ifdef PSEUDOS
 
 struct pseudowin
 {
@@ -114,7 +113,6 @@ struct pseudowin
 /* window output has to be stuffed in pseudo */
 #define W_WTOP(w) (((w)->w_pwin->p_fdpat & F_PMASK) == F_PBOTH)
 
-#endif /* PSEUDOS */
 
 /* definitions for wlocktype */
 #define WLOCK_OFF	0	/* all in w_userbits can write */
@@ -122,7 +120,6 @@ struct pseudowin
 #define WLOCK_ON	2	/* user writes even if deselected */
 
 
-#ifdef COPY_PASTE
 struct paster
 {
   char	*pa_pastebuf;		/* this gets pasted in the window */
@@ -131,9 +128,6 @@ struct paster
   struct layer *pa_pastelayer;	/* layer to paste into */
   struct event pa_slowev;	/* slowpaste event */
 };
-#else
-struct paster;
-#endif
 
 struct win
 {
@@ -143,9 +137,7 @@ struct win
   struct layer w_layer;		/* our layer */
   struct layer *w_savelayer;	/* the layer to keep */
   int    w_blocked;		/* block input */
-#ifdef PSEUDOS
   struct pseudowin *w_pwin;	/* ptr to pseudo */
-#endif
   struct display *w_pdisplay;	/* display for printer relay */
   struct display *w_lastdisp;	/* where the last input was made */
   int	 w_number;		/* window number */
@@ -170,38 +162,30 @@ struct win
   int	 w_args[MAXARGS];	/* emulator args */
   int	 w_NumArgs;
 
-#ifdef MULTIUSER
   int    w_wlock;		/* WLOCK_AUTO, WLOCK_OFF, WLOCK_ON */
   struct acluser *w_wlockuser;	/* NULL when unlocked or user who writes */
   AclBits w_userbits[ACL_BITS_PER_WIN];
   AclBits w_lio_notify;		/* whom to tell when lastio+seconds < time() */
   AclBits w_mon_notify;		/* whom to tell monitor statis */
-#endif
 
   enum state_t w_state;		/* parser state */
   enum string_t w_StringType;
   struct mline *w_mlines;
   struct mchar w_rend;		/* current rendition */
-#ifdef FONT
   char	 w_FontL;		/* character font GL */
   char	 w_FontR;		/* character font GR */
-# ifdef ENCODINGS
   char	 w_FontE;		/* character font GR locked */
-# endif
   int	 w_Charset;		/* charset number GL */
   int	 w_CharsetR;		/* charset number GR */
   int	 w_charsets[4];		/* Font = charsets[Charset] */
-#endif
   int	 w_ss;
   struct cursor {
     int on;
     int	 x, y;
     struct mchar Rend;
-#ifdef FONT
     int	 Charset;
     int	 CharsetR;
     int	 Charsets[4];
-#endif
   } w_saved;
   int	 w_top, w_bot;		/* scrollregion */
   int	 w_wrap;		/* autowrap */
@@ -217,13 +201,8 @@ struct win
   int	 w_gr;			/* enable GR flag */
   int	 w_c1;			/* enable C1 flag */
   int	 w_bce;			/* enable backcol erase */
-#if 0
-  int    w_encoding;		/* for input and paste */
-#endif
   int    w_decodestate;		/* state of our input decoder */
-#ifdef DW_CHARS
   int    w_mbcs;		/* saved char for multibytes charset */
-#endif
   char	 w_string[MAXSTR];
   char	*w_stringp;
   char	*w_tabs;		/* line with tabs */
@@ -236,25 +215,15 @@ struct win
   int	 w_silence;		/* silence status (Lloyd Zusman) */
   char	 w_vbwait;
   char	 w_norefresh;		/* dont redisplay when switching to that win */
-#ifdef RXVT_OSC
-  char	 w_xtermosc[5][2560];	/* special xterm/rxvt escapes */
-#endif
   int    w_mouse;		/* mouse mode 0,9,1000 */
   int    w_extmouse;		/* extended mouse mode 0,1006 */
-#ifdef HAVE_BRAILLE
-  int	 w_bd_x, w_bd_y;	/* Braille cursor position */
-#endif
 
-#ifdef COPY_PASTE
   int    w_slowpaste;		/* do careful writes to the window */
   int	 w_histheight;		/* all histbases are malloced with width * histheight */
   int	 w_histidx;		/* 0 <= histidx < histheight; where we insert lines */
   int	 w_scrollback_height;	/* number of lines of output stored, to be updated with w_histidx, w_histheight */
   struct mline *w_hlines;	/* history buffer */
   struct paster w_paster;	/* paste info */
-#else
-  int	 w_histheight;		/* always 0 */
-#endif
   int	 w_pid;			/* process at the other end of ptyfd */
   int	 w_deadpid;		/* saved w_pid of a process that closed the ptyfd to us */
 
@@ -264,48 +233,25 @@ struct win
 
   int    w_lflag;		/* login flag */
   slot_t w_slot;		/* utmp slot */
-#if defined (UTMPOK)
   struct utmp w_savut;		/* utmp entry of this window */
-#endif
 
   char	 w_tty[MAXSTR];
 
   int    w_zauto;
-#ifdef ZMODEM
   struct display *w_zdisplay;
-#endif
-#ifdef BUILTIN_TELNET
-  struct sockaddr_storage w_telsa;
-  char   w_telbuf[IOSIZE];
-  int    w_telbufl;
-  char   w_telmopts[256];
-  char   w_telropts[256];
-  int    w_telstate;
-  char   w_telsubbuf[128];
-  int    w_telsubidx;
-  struct event w_telconnev;
-#endif
   struct {
     int    on;    /* Is the alternate buffer currently being used? */
     struct mline *mlines;
     int    width;
     int    height;
-#ifdef COPY_PASTE
     int    histheight;
     struct mline *hlines;
     int    histidx;
-#else
-    int histheight;	/* 0 */
-#endif
     struct cursor cursor;
   } w_alt;
 
   struct event w_destroyev;	/* window destroy event */
-#ifdef BSDWAIT
-  union wait w_exitstatus;	/* window exit status */
-#else
   int w_exitstatus;
-#endif
 };
 
 
@@ -353,5 +299,4 @@ struct win
 int WindowChangeNumber __P((int, int));
 int OpenDevice __P((char **, int, int *, char **));
 
-#endif /* SCREEN_WINDOW_H */
 

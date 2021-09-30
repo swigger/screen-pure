@@ -11,3 +11,6 @@ screen:$(OBJS)
 
 %.o:%.c
 	$(CC) -c $(CFLAGS) -o $@ $<
+
+clean:
+	-@ rm -f *.o screen

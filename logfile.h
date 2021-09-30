@@ -27,6 +27,7 @@
  * $Id$ GNU
  */
 
+#pragma once
 struct logfile
 {
   struct logfile *next;

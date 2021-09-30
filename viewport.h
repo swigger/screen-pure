@@ -27,7 +27,7 @@
  * $Id$ GNU
  */
 
-#ifndef SCREEN_VIEWPORT_H
+#pragma once
 #define SCREEN_VIEWPORT_H
 
 #include "canvas.h"
@@ -47,5 +47,4 @@ struct viewport
 extern int    RethinkDisplayViewports __P((void));
 extern void   RethinkViewportOffsets __P((struct canvas *));
 
-#endif /* SCREEN_VIEWPORT_H */
 

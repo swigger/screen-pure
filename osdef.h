@@ -31,43 +31,16 @@
  ****************************************************************
  */
 
-#ifdef USEVARARGS
-#endif
-
-#ifdef LOG_NOTICE
-#endif
-
-#if defined(sun) || defined(_SEQUENT_)
-extern int   _flsbuf __P((int, FILE *));
-#endif
-
-#ifdef SYSV
-#else
-#endif
-
-#ifndef USEBCOPY
-# ifdef USEMEMCPY
-# else
-#  ifdef USEMEMMOVE
-#  else
-#  endif
-# endif
-#else
-#endif
-
-#ifdef BSDWAIT
-#else
-#endif
 
 
-#ifdef HAVE_SETRESUID
-#endif
-#ifdef HAVE_SETREUID
-#endif
-#ifdef HAVE_SETEUID
-#endif
 
 
+
+
+
+
+
+#pragma once
 extern int   tgetent __P((char *, char *));
 extern char *tgetstr __P((char *, char **));
 extern int   tgetnum __P((char *));
@@ -75,9 +48,7 @@ extern int   tgetflag __P((char *));
 extern void  tputs __P((char *, int, int (*)(int)));
 extern char *tgoto __P((char *, int, int));
 
-#ifdef POSIX
 #include <string.h>
-#endif
 
 
 
@@ -85,38 +56,14 @@ extern char *tgoto __P((char *, int, int));
 
 
 
-#ifdef _AIX
-#else
-#endif
-
-#if defined(UTMPOK) && defined(GETUTENT)
-#endif
-
-#if defined(sequent) || defined(_SEQUENT_)
-extern int   getpseudotty __P((char **, char **));
-#ifdef _SEQUENT_
-extern int   fvhangup __P((char *));
-#endif
-#endif
-
-#ifdef HAVE_UTIMES
-#endif
 
 
-# if defined(GETTTYENT) && !defined(GETUTENT) && !defined(UTNOKEEP)
-struct ttyent;		/* for getttyent __P */
-extern void  setttyent __P((void));
-extern struct ttyent *getttyent __P((void));
-# endif
 
-#ifdef SVR4
-struct rlimit;		/* for getrlimit __P */
-extern int getrlimit __P((int, struct rlimit *));
-#endif
+
+
+
 
 struct stat;
 
-#if defined(LOADAV) && defined(LOADAV_GETLOADAVG)
 extern int getloadavg(double *, int);
-#endif
 

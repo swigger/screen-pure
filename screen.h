@@ -27,18 +27,9 @@
  * $Id$ GNU
  */
 
+#pragma once
 #include "os.h"
 
-#if defined(__STDC__)
-# ifndef __P
-#  define __P(a) a
-# endif
-#else
-# ifndef __P
-#  define __P(a) ()
-# endif
-# define const
-#endif
 
 #include "osdef.h"
 
@@ -50,41 +41,17 @@
 #include "term.h"
 
 
-#ifdef DEBUG
-# define STATIC		/* a function that the debugger should see */
-#else
 # define STATIC static
-#endif
 
-#ifdef DEBUG
-# define DEBUGDIR "/tmp/debug"
-# define debugf(a)       do {if(dfp){fprintf a;fflush(dfp);}} while (0)
-# define debug(x)        debugf((dfp,x))
-# define debug1(x,a)     debugf((dfp,x,a))
-# define debug2(x,a,b)   debugf((dfp,x,a,b))
-# define debug3(x,a,b,c) debugf((dfp,x,a,b,c))
-  extern FILE *dfp;
-#else
 # define debugf(a)       do {} while (0)
 # define debug(x)        debugf(x)
 # define debug1(x,a)     debugf(x)
 # define debug2(x,a,b)   debugf(x)
 # define debug3(x,a,b,c) debugf(x)
-#endif
 
-#ifndef DEBUG
 # define NOASSERT
-#endif
 
-#ifndef NOASSERT
-# if defined(__STDC__)
-#  define ASSERT(lousy_cpp) do {if (!(lousy_cpp)) {if (!dfp) opendebug(0, 1);debug2("ASSERT("#lousy_cpp") failed file %s line %d\n", __FILE__, __LINE__);abort();}} while (0)
-# else
-#  define ASSERT(lousy_cpp) do {if (!(lousy_cpp)) {if (!dfp) opendebug(0, 1);debug2("ASSERT(lousy_cpp) failed file %s line %d\n", __FILE__, __LINE__);abort();}} while (0)
-# endif
-#else
 # define ASSERT(lousy_cpp) do {} while (0)
-#endif
 
 /* here comes my own Free: jw. */
 #define Free(a) {if ((a) == 0) abort(); else free((void *)(a)); (a)=0;}
@@ -103,51 +70,17 @@
  */
 #define MAXHISTHEIGHT		3000
 #define DEFAULTHISTHEIGHT	100
-#if defined(NAME_MAX) && NAME_MAX < 16
-# define DEFAULT_BUFFERFILE     "/tmp/screen-xchg"
-#else
 # define DEFAULT_BUFFERFILE	"/tmp/screen-exchange"
-#endif
 
 /*
  * Define PATH_MAX to 4096 if it's not defined, like on GNU/Hurd
  */
 
-#ifndef PATH_MAX
-#define PATH_MAX 4096
-#endif
 
-#if defined(hpux) && !(defined(VSUSP) && defined(VDSUSP) && defined(VWERASE) && defined(VLNEXT))
-# define HPUX_LTCHARS_HACK
-#endif
 
 struct mode
 {
-#ifdef POSIX
   struct termios tio;
-# ifdef HPUX_LTCHARS_HACK
-  struct ltchars m_ltchars;
-# endif /* HPUX_LTCHARS_HACK */
-#else /* POSIX */
-# ifdef TERMIO
-  struct termio tio;
-#  ifdef CYTERMIO
-  int m_mapkey;
-  int m_mapscreen;
-  int m_backspace;
-#  endif
-# else /* TERMIO */
-  struct sgttyb m_ttyb;
-  struct tchars m_tchars;
-  struct ltchars m_ltchars;
-  int m_ldisc;
-  int m_lmode;
-# endif /* TERMIO */
-#endif /* POSIX */
-#if defined(KANJI) && defined(TIOCKSET)
-  struct jtchars m_jtchars;
-  int m_knjmode;
-#endif
 };
 
 
@@ -257,9 +190,7 @@ struct msg
 #define SIG_POWER_BYE	SIGUSR1
 #define SIG_LOCK	SIGUSR2
 #define SIG_STOP	SIGTSTP
-#ifdef SIGIO
 #define SIG_NODEBUG	SIGIO		/* triggerd by command 'debug off' */
-#endif
 
 
 #define BELL		(Ctrl('g'))
@@ -297,13 +228,11 @@ extern char strnomem[];
 #define INP_EVERY	4
 
 
-#ifdef MULTIUSER
 struct acl
 {
   struct acl *next;
   char *name;
 };
-#endif
 
 /* register list */
 #define MAX_PLOP_DEFS 256

@@ -27,6 +27,7 @@
  * $Id$ GNU
  */
 
+#pragma once
 struct markdata
 {
   struct win *md_window;/* pointer to window we are working on */

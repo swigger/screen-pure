@@ -530,6 +530,7 @@
  * 2005-12-19, 4.00.03jw3 syntax error.
 */
 
+#pragma once
 #define ORIGIN "GNU"
 #define REV 4
 #define VERS 8

@@ -27,7 +27,7 @@
  * $Id$ GNU
  */
 
-#ifndef SCREEN_LAYOUT_H
+#pragma once
 #define SCREEN_LAYOUT_H
 
 #include "canvas.h"
@@ -59,5 +59,4 @@ extern int   LayoutDumpCanvas __P((struct canvas *, char *));
 extern void RenameLayout __P((struct layout *, const char *));
 extern int RenumberLayout __P((struct layout *, int));
 
-#endif /* SCREEN_LAYOUT_H */
 

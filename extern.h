@@ -27,11 +27,8 @@
  * $Id$ GNU
  */
 
-#if !defined(__GNUC__) || __GNUC__ < 2
-#undef __attribute__
-#define __attribute__(x)
-#endif
 
+#pragma once
 #include <stdbool.h>
 
 /* screen.c */
@@ -41,28 +38,17 @@ extern void  eexit __P((int)) __attribute__((__noreturn__));
 extern void  Detach __P((int));
 extern void  Hangup __P((void));
 extern void  Kill __P((int, int));
-#ifdef USEVARARGS
 extern void  Msg __P((int, const char *, ...)) __attribute__((format(printf, 2, 3)));
 extern void  Panic __P((int, const char *, ...)) __attribute__((format(printf, 2, 3))) __attribute__((__noreturn__));
 extern void  QueryMsg __P((int, const char *, ...)) __attribute__((format(printf, 2, 3)));
 extern void  Dummy __P((int, const char *, ...)) __attribute__((format(printf, 2, 3)));
-#else
-extern void  Msg __P(());
-extern void  Panic __P(());
-extern void  QueryMsg __P(());
-extern void  Dummy __P(());
-#endif
 extern void  Finit __P((int));
 extern void  MakeNewEnv __P((void));
 extern char *MakeWinMsg __P((char *, struct win *, int));
 extern char *MakeWinMsgEv __P((char *, struct win *, int, int, struct event *, int));
 extern int   AddWinMsgRend __P((const char *, int));
 extern void  PutWinMsg __P((char *, int, int));
-#ifdef BSDWAIT
-extern void  WindowDied __P((struct win *, union wait, int));
-#else
 extern void  WindowDied __P((struct win *, int, int));
-#endif
 extern void  setbacktick __P((int, int, int, char **));
 
 /* ansi.c */
@@ -104,9 +90,6 @@ extern void  SetFlow __P((int));
 extern void  SendBreak __P((struct win *, int, int));
 extern int   TtyGrabConsole __P((int, int, char *));
 extern char *TtyGetModemStatus __P((int, char *));
-#ifdef DEBUG
-extern void  DebugTTY __P((struct mode *));
-#endif /* DEBUG */
 extern int   fgtty __P((int));
 extern void  brktty __P((int));
 extern struct baud_values *lookup_baud __P((int bps));
@@ -142,54 +125,34 @@ extern void  display_bindkey __P((char *, struct action *));
 extern int   InWList __P((void));
 extern void  WListUpdatecv __P((struct canvas *, struct win *));
 extern void  WListLinkChanged __P((void));
-#ifdef ZMODEM
 extern void  ZmodemPage __P((void));
-#endif
 
 /* window.c */
 extern int   MakeWindow __P((struct NewWindow *));
 extern int   RemakeWindow __P((struct win *));
 extern void  FreeWindow __P((struct win *));
-#ifdef PSEUDOS
 extern int   winexec __P((char **));
 extern void  FreePseudowin __P((struct win *));
-#endif
 extern void  nwin_compose __P((struct NewWindow *, struct NewWindow *, struct NewWindow *));
 extern int   DoStartLog __P((struct win *, char *, int));
 extern int   ReleaseAutoWritelock __P((struct display *, struct win *));
 extern int   ObtainAutoWritelock __P((struct display *, struct win *));
 extern void  CloseDevice __P((struct win *));
-#ifdef ZMODEM
 extern void  zmodem_abort __P((struct win *, struct display *));
-#endif
-#ifndef HAVE_EXECVPE
-extern void  execvpe __P((char *, char **, char **));
-#endif
 
 /* utmp.c */
-#ifdef UTMPOK
 extern void  InitUtmp __P((void));
 extern void  RemoveLoginSlot __P((void));
 extern void  RestoreLoginSlot __P((void));
 extern int   SetUtmp __P((struct win *));
 extern int   RemoveUtmp __P((struct win *));
-#endif /* UTMPOK */
 extern void  SlotToggle __P((int));
-#ifdef USRLIMIT
-extern int   CountUsers __P((void));
-#endif
-#ifdef CAREFULUTMP
-extern void   CarefulUtmp __P((void));
-#else
 # define CarefulUtmp()  /* nothing */
-#endif /* CAREFULUTMP */
 
 
 /* loadav.c */
-#ifdef LOADAV
 extern void  InitLoadav __P((void));
 extern void  AddLoadav __P((char *));
-#endif
 
 /* pty.c */
 extern int   OpenPTY __P((char **));
@@ -198,9 +161,7 @@ extern void  InitPTY __P((int));
 /* process.c */
 extern void  InitKeytab __P((void));
 extern void  ProcessInput __P((char *, int));
-#ifdef MAPKEYS
 extern void  ProcessInput2 __P((char *, int));
-#endif
 extern void  DoProcess __P((struct win *, char **, int *, struct paster *));
 extern void  DoAction  __P((struct action *, int));
 extern int   FindCommnr __P((const char *));
@@ -218,12 +179,7 @@ extern char *AddWindowFlags __P((char *, int, struct win *));
 extern char *AddOtherUsers __P((char *, int, struct win *));
 extern int   WindowByNoN __P((char *));
 extern struct win *FindNiceWindow __P((struct win *, char *));
-#ifdef COPY_PASTE
 extern int   CompileKeys __P((char *, int, unsigned char *));
-#endif
-#ifdef RXVT_OSC
-extern void  RefreshXtermOSC __P((void));
-#endif
 extern int   ParseSaveStr __P((struct action *act, char **));
 extern int   ParseNum __P((struct action *act, int *));
 extern int   ParseSwitch __P((struct action *, int *));
@@ -237,10 +193,8 @@ extern int   InitTermcap __P((int, int));
 extern char *MakeTermcap __P((int));
 extern void  DumpTermcap __P((int, FILE *));
 extern char *gettermcapstring __P((char *));
-#ifdef MAPKEYS
 extern int   remap __P((int, int));
 extern void  CheckEscape __P((void));
-#endif
 extern int   CreateTransTable __P((char *));
 extern void  FreeTransTable __P((void));
 
@@ -304,19 +258,8 @@ extern void  AddStrn __P((char *, int));
 extern void  Flush __P((int));
 extern void  freetty __P((void));
 extern void  Resize_obuf __P((void));
-#ifdef AUTO_NUKE
 extern void  NukePending __P((void));
-#endif
-#ifdef RXVT_OSC
-extern void  ClearAllXtermOSC __P((void));
-extern void  SetXtermOSC __P((int, char *, char *));
-#endif
-#ifdef COLOR
 extern int   color256to16 __P((int));
-# ifdef COLORS256
-extern int   color256to88 __P((int));
-# endif
-#endif
 extern void  ResetIdle __P((void));
 extern void  KillBlanker __P((void));
 extern void  DisplaySleep1000 __P((int, int));
@@ -356,51 +299,27 @@ extern bool  IsSocket __P((const char *));
 extern char *SaveStr __P((const char *));
 extern char *SaveStrn __P((const char *, int));
 extern char *InStr __P((char *, const char *));
-#ifndef HAVE_STRERROR
-extern char *strerror __P((int));
-#endif
 extern void  centerline __P((char *, int));
 extern void  leftline __P((char *, int, struct mchar *));
 extern char *Filename __P((char *));
 extern char *stripdev __P((char *));
-#ifdef NEED_OWN_BCOPY
-extern void  xbcopy __P((char *, char *, int));
-#endif
 extern void  bclear __P((char *, int));
 extern void  closeallfiles __P((int));
 extern int   UserContext __P((void));
 extern void  UserReturn __P((int));
 extern int   UserStatus __P((void));
-#if defined(POSIX) || defined(hpux)
 extern void (*xsignal __P((int, void (*)SIGPROTOARG))) __P(SIGPROTOARG);
-#endif
-#ifndef HAVE_RENAME
-extern int   rename __P((char *, char *));
-#endif
-#if defined(HAVE_SETEUID) || defined(HAVE_SETREUID)
 extern void  xseteuid  __P((int));
 extern void  xsetegid  __P((int));
-#endif
 extern int   AddXChar __P((char *, int));
 extern int   AddXChars __P((char *, int, char *));
 extern void  xsetenv  __P((char *, char *));
 extern void  sleep1000 __P((int));
-#ifdef DEBUG
-extern void  opendebug __P((int, int));
-#endif
-#ifdef USEVARARGS
-# ifndef HAVE_VSNPRINTF
-extern int   xvsnprintf __P((char *, int, char *, va_list));
-# endif
-#else
-extern int   xsnprintf __P(());
-#endif
 extern time_t SessionCreationTime __P((const char *));
 extern time_t GetUptime __P((void));
 
 
 /* acl.c */
-#ifdef MULTIUSER
 extern int   AclCheckPermWin __P((struct acluser *, int, struct win *));
 extern int   AclCheckPermCmd __P((struct acluser *, int, struct comm *));
 extern int   AclSetPerm __P((struct acluser *, struct acluser *, char *, char *));
@@ -411,7 +330,6 @@ extern int   NewWindowAcl __P((struct win *, struct acluser *));
 extern void  FreeWindowAcl __P((struct win *));
 extern char *DoSu __P((struct acluser **, char *, char *, char *));
 extern int   AclLinkUser __P((char *, char *));
-#endif /* MULTIUSER */
 extern int   UserFreeCopyBuffer __P((struct acluser *));
 extern struct acluser **FindUserPtr __P((char *));
 extern int   UserAdd __P((char *, char *, struct acluser **));
@@ -419,15 +337,6 @@ extern int   UserDel __P((char *, struct acluser **));
 
 
 /* braile.c */
-#ifdef HAVE_BRAILLE
-extern void  InitBraille __P((void));
-extern void  RefreshBraille __P((void));
-extern void  DoBrailleAction __P((struct action *, int));
-extern void  BGotoPos __P((struct layer *, int, int));
-extern void  BPutChar __P((struct layer *, struct mchar *, int, int));
-extern void  BPutStr __P((struct layer *, char *, int, struct mchar *, int, int));
-extern void  BCDisplayLine __P((struct layer *, struct mline *, int, int, int, int));
-#endif
 
 
 
@@ -454,11 +363,7 @@ extern void  LKeypadMode __P((struct layer *, int));
 extern void  LCursorkeysMode __P((struct layer *, int));
 extern void  LMouseMode __P((struct layer *, int));
 extern void  LExtMouseMode __P((struct layer *, int));
-#if defined(USEVARARGS)
 extern void  LMsg __P((int, const char *, ...)) __attribute__((format(printf, 2, 3)));
-#else
-extern void  LMsg __P(());
-#endif
 extern void  KillLayerChain __P((struct layer *));
 extern int   InitOverlayPage __P((int, struct LayFuncs *, int));
 extern void  ExitOverlayPage __P((void));
@@ -466,23 +371,11 @@ extern int   LayProcessMouse __P((struct layer *, unsigned char));
 extern void  LayProcessMouseSwitch __P((struct layer *, int));
 
 /* teln.c */
-#ifdef BUILTIN_TELNET
-extern int   TelOpenAndConnect __P((struct win *));
-extern int   TelIsline __P((struct win *p));
-extern void  TelProcessLine __P((char **, int *));
-extern int   DoTelnet __P((char *, int *, int));
-extern int   TelIn __P((struct win *, char *, int, int));
-extern void  TelBreak __P((struct win *));
-extern void  TelWindowSize __P((struct win *));
-extern void  TelStatus __P((struct win *, char *, int));
-#endif
 
 /* nethack.c */
 extern const char *DoNLS __P((const char *));
 
 /* encoding.c */
-#ifdef ENCODINGS
-# ifdef UTF8
 extern void  InitBuiltinTabs __P((void));
 extern struct mchar *recode_mchar __P((struct mchar *, int, int));
 extern struct mline *recode_mline __P((struct mline *, int, int, int));
@@ -496,7 +389,6 @@ extern void  utf8_handle_comb __P((int, struct mchar *));
 extern int   ContainsSpecialDeffont __P((struct mline *, int, int, int));
 extern int   LoadFontTranslation __P((int, char *));
 extern void  LoadFontTranslationsForEncoding __P((int));
-# endif	/* UTF8 */
 extern void  WinSwitchEncoding __P((struct win *, int));
 extern int   FindEncoding __P((char *));
 extern char *EncodingName __P((int));
@@ -505,10 +397,7 @@ extern void  ResetEncoding __P((struct win *));
 extern int   CanEncodeFont __P((int, int));
 extern int   DecodeChar __P((int, int, int *));
 extern int   RecodeBuf __P((unsigned char *, int, int, int, unsigned char *));
-# ifdef DW_CHARS
 extern int   PrepareEncodedChar __P((int));
-# endif
-#endif
 extern int   EncodeChar __P((char *, int, int, int *));
 
 /* layout.c */
